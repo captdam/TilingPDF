@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html><head>
+	<!--script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.js"></script-->
+	<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+	<script src="tile.js"></script>
+</head><body>
+	<details id="src" open>
+		<input id="src_file" type="file" multiple accept="application/pdf, image/jpeg, image/png" ondragover="event.preventDefault()" placeholder="Select or drop files here" /><br />
+		<label for="src_tx">Horizontal tile: </label><input id="src_tx" type="number" value="1" /><label for="src_ty">Vertical tile: </label><input id="src_ty" type="number" value="1" /><button id="run">Tile</button>
+	</details>
+	<iframe id="pdfViewer" src="" type="application/pdf"></iframe>
+	
+</body><script>
+	const callback = result => document.getElementById('pdfViewer').src = URL.createObjectURL(new Blob([result], {type: 'application/pdf'}));
+	const func = async event => {
+		event.preventDefault();
+		await tile(document.getElementById('src_file').files, {x: document.getElementById('src_tx').value, y: document.getElementById('src_ty').value}, callback);
+	};
+	document.getElementById('src_file').onchange = async event => await func(event);
+	document.getElementById('src_file').ondrop = async event => await func(event);
+	document.getElementById('run').onclick = async event => await func(event);
+</script><style>
+	html { border: 0; padding: 0; margin: 0; }
+	body { border: 0; padding: 0; margin: 0; overflow: hidden; width: 100%; height: 100%; }
+	#src { position: absolute; left: 0; bottom: 0; background-color: #CCC; /*overflow: scroll;*/ }
+	#src>* { margin: 2px; padding: 2px; }
+	#pdfViewer { width: 100vw; height: 100vh; }
+</style></html>
